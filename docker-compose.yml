@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+    environment:
+      GAZETTE_TIMEOUT_SECONDS: "15"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - gazette-data:/app/data
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: gazette
+      POSTGRES_USER: gazette
+      POSTGRES_PASSWORD: gazette-dev-only
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gazette -d gazette"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  gazette-data:
+  postgres-data:

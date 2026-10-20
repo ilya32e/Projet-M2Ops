@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>La Gazette Fixture</title>
+    <item>
+      <title>Un titre de test</title>
+      <description>&lt;p&gt;Un extrait &amp; court pour vérifier le parseur.&lt;/p&gt;</description>
+      <pubDate>Mon, 19 Oct 2026 07:00:00 +0200</pubDate>
+      <link>https://example.test/article-1</link>
+    </item>
+    <item>
+      <title>Entrée sans lien</title>
+      <description>Cette entrée doit être ignorée.</description>
+    </item>
+  </channel>
+</rss>

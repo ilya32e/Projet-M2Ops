@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+export PYTHONPATH="$(CDPATH= cd -- "$(dirname -- "$0")/../src" && pwd)"
+exec python -m gazette.cli --source "${GAZETTE_SOURCE:-Le Monde}" --output "${GAZETTE_OUTPUT:-data/items.jsonl}"
