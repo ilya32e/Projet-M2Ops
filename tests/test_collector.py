@@ -7,8 +7,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from gazette.collector import collect_once
-from gazette.models import NewsItem
-from gazette.storage import connect, initialize, store_item
+from gazette.models import NewsItem, Source
+from gazette.storage import active_sources, connect, initialize, store_item
 
 
 class FeedHandler(BaseHTTPRequestHandler):
@@ -84,6 +84,19 @@ class CollectorTest(unittest.TestCase):
             database.close()
             self.assertEqual(active, 0)
             self.assertEqual(failures, 3)
+
+    def test_sleeping_source_can_be_retried_after_cooldown(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            database = connect(root / "gazette.sqlite3")
+            source = Source("Retry", "PQN", "Test", "https://example.test/rss", "RSS")
+            initialize(database, [source], Path("migrations"))
+            database.execute(
+                "UPDATE sources SET actif=0, sommeil_jusqu_a='2000-01-01T00:00:00+00:00'"
+            )
+            database.commit()
+            self.assertEqual(len(active_sources(database)), 1)
+            database.close()
 
     def test_same_guid_from_two_sources_does_not_collide(self):
         with TemporaryDirectory() as directory:

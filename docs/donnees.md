@@ -15,9 +15,11 @@ La table SQLite `sources` est alimentée depuis [sources.csv](../sources.csv) et
 | `etag` | Valeur ETag reçue du serveur |
 | `last_modified` | Valeur Last-Modified reçue du serveur |
 | `derniere_erreur` | Dernière erreur rencontrée, limitée à 1000 caractères |
+| `sommeil_jusqu_a` | Date UTC à laquelle une source en sommeil pourra être retentée |
 
 ## Articles bruts
 
 Chaque entrée est écrite une seule fois dans `articles_bruts/` selon la clé naturelle `(source, lien)`.
 Le fichier JSON contient `id`, `source`, `lien`, `titre`, `resume`, `publie_le`, `recupere_le`, `rubrique` et `payload`.
-Le `payload` ne contient que les métadonnées et l’extrait fourni par le flux ; aucun texte intégral, image ou commentaire n’est collecté.
+Le `payload` conserve l’entrée normalisée et le XML du flux reçu pour audit et rejeu ;
+aucun article HTML complet, image binaire ou commentaire n’est collecté.

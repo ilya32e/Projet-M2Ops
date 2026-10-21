@@ -1,7 +1,7 @@
 import hashlib
 import json
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
@@ -56,6 +56,13 @@ def initialize(
 
 
 def active_sources(database: sqlite3.Connection) -> list[sqlite3.Row]:
+    database.execute(
+        """UPDATE sources SET actif=1, echecs_consecutifs=0, derniere_erreur=NULL,
+           sommeil_jusqu_a=NULL
+           WHERE actif=0 AND sommeil_jusqu_a IS NOT NULL AND sommeil_jusqu_a <= ?""",
+        (utc_now(),),
+    )
+    database.commit()
     return list(database.execute("SELECT * FROM sources WHERE actif = 1 ORDER BY nom"))
 
 
@@ -77,8 +84,10 @@ def mark_failure(database: sqlite3.Connection, name: str, error: str) -> int:
     database.execute(
         """UPDATE sources SET echecs_consecutifs=echecs_consecutifs+1,
            actif=CASE WHEN echecs_consecutifs + 1 >= 3 THEN 0 ELSE actif END,
-           derniere_erreur=? WHERE nom=?""",
-        (error[:1000], name),
+           derniere_erreur=?, sommeil_jusqu_a=CASE
+             WHEN echecs_consecutifs + 1 >= 3
+             THEN ? ELSE sommeil_jusqu_a END WHERE nom=?""",
+        (error[:1000], (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat(), name),
     )
     database.commit()
     row = database.execute(
@@ -109,7 +118,10 @@ def store_item(database: sqlite3.Connection, raw_dir: Path, item: NewsItem) -> b
         "publie_le": item.published_at,
         "recupere_le": recovered_at,
         "rubrique": item.category,
-        "payload": item.payload,
+        "payload": {
+            "entry": item.payload,
+            "feed_xml": item.raw_payload,
+        },
     }
     (raw_dir / file_name).write_text(
         json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8"

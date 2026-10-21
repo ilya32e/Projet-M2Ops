@@ -22,6 +22,7 @@ class NewsItem:
     guid: str = ""
     category: str = ""
     payload: dict[str, str] = field(default_factory=dict)
+    raw_payload: str = ""
 
     def as_dict(self) -> dict[str, str]:
         return {
