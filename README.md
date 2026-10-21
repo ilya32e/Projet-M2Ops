@@ -1,15 +1,5 @@
 # La Gazette
 
-Socle du pipeline de veille presse du projet M2OPS.
-
-Le TD2 fournit :
-
-- un parseur RSS/Atom sans collecte de texte intégral ;
-- une commande qui écrit des items normalisés en JSON Lines ;
-- une fixture et des tests unitaires ;
-- un environnement Docker Compose reproductible ;
-- une CI qui vérifie le code et construit l'image.
-
 ## Prérequis
 
 - Python 3.10 ou plus récent ;
