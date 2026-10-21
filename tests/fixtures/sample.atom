@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>La Gazette Atom</title>
+  <entry>
+    <title>Un titre Atom</title>
+    <id>tag:example.test,2026:atom-1</id>
+    <link href="https://example.test/atom-1" />
+    <updated>2026-10-21T07:30:00+02:00</updated>
+    <summary>Un résumé Atom</summary>
+    <category term="Monde" />
+  </entry>
+</feed>

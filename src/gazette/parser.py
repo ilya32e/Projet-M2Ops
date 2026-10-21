@@ -1,78 +1,86 @@
 import html
+import logging
 import re
-import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
+import feedparser
+
 from .models import NewsItem, Source
 
+LOG = logging.getLogger("gazette.parser")
 TAG_RE = re.compile(r"<[^>]+>")
-ATOM = "{http://www.w3.org/2005/Atom}"
 
 
-def _text(element: ET.Element | None) -> str:
-    if element is None:
-        return ""
-    return " ".join(html.unescape(TAG_RE.sub(" ", "".join(element.itertext()))).split())
+def _clean(value: object) -> str:
+    text = html.unescape(str(value or ""))
+    return " ".join(TAG_RE.sub(" ", text).split())
 
 
-def _first_text(element: ET.Element, names: tuple[str, ...]) -> str:
+def _entry_text(entry: dict, *names: str) -> str:
     for name in names:
-        child = element.find(name)
-        if child is None:
-            child = element.find(f"{ATOM}{name}")
-        value = _text(child)
+        value = entry.get(name)
         if value:
-            return value
+            return _clean(value)
     return ""
 
 
-def _link(element: ET.Element) -> str:
-    link = element.find("link")
-    if link is not None and link.get("href"):
-        return link.get("href", "").strip()
-    for candidate in element.findall(f"{ATOM}link"):
-        if candidate.get("rel", "alternate") == "alternate" and candidate.get("href"):
-            return candidate.get("href", "").strip()
-    return _text(link)
+def _entry_link(entry: dict) -> str:
+    for link in entry.get("links", []):
+        if link.get("rel", "alternate") == "alternate" and link.get("href"):
+            return link["href"].strip()
+    return _clean(entry.get("link"))
 
 
-def _categories(element: ET.Element) -> str:
-    values = [_text(child) for child in element.findall("category")]
-    values += [_text(child) for child in element.findall(f"{ATOM}category")]
-    return ", ".join(value for value in values if value)
+def _entry_category(entry: dict) -> str:
+    categories = [tag.get("term", "") for tag in entry.get("tags", [])]
+    return ", ".join(_clean(category) for category in categories if category)
 
 
-def _normalize_date(value: str) -> str | None:
-    if not value:
-        return None
-    try:
-        parsed = parsedate_to_datetime(value)
-    except (TypeError, ValueError, IndexError):
+def _normalize_date(value: object) -> str | None:
+    if isinstance(value, tuple):
         try:
-            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-        except ValueError:
+            parsed = datetime(*value[:6], tzinfo=timezone.utc)
+        except (TypeError, ValueError):
             return None
+    elif value:
+        try:
+            parsed = parsedate_to_datetime(str(value))
+        except (TypeError, ValueError, IndexError):
+            try:
+                parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+            except ValueError:
+                return None
+    else:
+        return None
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc).isoformat()
 
 
 def parse_feed(payload: bytes, source: Source) -> list[NewsItem]:
-    root = ET.fromstring(payload)
-    entries = root.findall(".//item") or root.findall(f".//{ATOM}entry")
+    parsed = feedparser.parse(payload)
+    if parsed.bozo:
+        LOG.warning("Flux mal formé pour %s: %s", source.name, parsed.bozo_exception)
+
     items = []
-    for entry in entries:
-        title = _first_text(entry, ("title",))
-        url = _link(entry)
+    for entry in parsed.entries:
+        title = _entry_text(entry, "title")
+        url = _entry_link(entry)
         if not title or not url:
             continue
-        excerpt = _first_text(entry, ("description", "summary", "content"))[:280]
-        published_at = _normalize_date(_first_text(entry, ("pubDate", "published", "updated")))
+        content = entry.get("content", [])
+        content_value = content[0].get("value", "") if content else ""
+        excerpt = _entry_text(entry, "summary", "description") or _clean(content_value)
+        published_at = _normalize_date(
+            entry.get("published_parsed")
+            or entry.get("updated_parsed")
+            or _entry_text(entry, "published", "updated")
+        )
         if published_at is None:
             continue
-        guid = _first_text(entry, ("guid", "id"))
-        category = _categories(entry)
+        guid = _entry_text(entry, "id", "guid")
+        category = _entry_category(entry)
         items.append(
             NewsItem(
                 source=source.name,
@@ -85,12 +93,12 @@ def parse_feed(payload: bytes, source: Source) -> list[NewsItem]:
                 category=category,
                 payload={
                     "title": title,
-                    "description": excerpt,
+                    "description": excerpt[:280],
                     "published": published_at,
                     "link": url,
                     "guid": guid,
                     "category": category,
-                    "raw_xml": ET.tostring(entry, encoding="unicode"),
+                    "feedparser_bozo": bool(parsed.bozo),
                 },
             )
         )

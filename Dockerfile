@@ -9,7 +9,7 @@ COPY pyproject.toml README.md ./
 COPY src ./src
 
 RUN python -m venv "$VIRTUAL_ENV" \
-    && pip install --no-cache-dir --no-deps .
+    && pip install --no-cache-dir .
 
 FROM python:3.12-slim AS runtime
 

@@ -7,7 +7,9 @@ name = "la-gazette"
 version = "0.1.0"
 description = "Collecte RSS/Atom minimale pour La Gazette"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "feedparser>=6.0.14,<7",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
