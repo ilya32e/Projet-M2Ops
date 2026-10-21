@@ -91,9 +91,3 @@ Les responsabilités sont collectives : toute modification de source, de schéma
 - Le besoin, le périmètre, les contraintes, les choix et les risques sont explicités dans cette note.
 - Le schéma montre les six étapes, les données qui circulent et l'emplacement d'exécution.
 - Le contenu respecte la règle « titre, extrait, lien, date » et ne prévoit aucune collecte de texte intégral.
-
-## 9. Suite prévue
-
-- **TD2** : dépôt, structure du projet, Docker, première source et CI.
-- **TD3** : collecte robuste et stockage brut.
-- Les évolutions ultérieures couvriront l'ordonnancement, le déploiement et les tableaux de bord.
