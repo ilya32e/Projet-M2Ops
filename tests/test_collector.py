@@ -78,7 +78,9 @@ class CollectorTest(unittest.TestCase):
             for _ in range(3):
                 collect_once(sources, root / "gazette.sqlite3", root / "articles_bruts", retries=1)
             with sqlite3.connect(root / "gazette.sqlite3") as database:
-                active, failures = database.execute("SELECT actif, echecs_consecutifs FROM sources").fetchone()
+                active, failures = database.execute(
+                    "SELECT actif, echecs_consecutifs FROM sources"
+                ).fetchone()
             database.close()
             self.assertEqual(active, 0)
             self.assertEqual(failures, 3)
@@ -88,8 +90,24 @@ class CollectorTest(unittest.TestCase):
             root = Path(directory)
             database = connect(root / "gazette.sqlite3")
             initialize(database, [], Path("migrations"))
-            first = NewsItem("Source A", "PQN", "Titre", "Extrait", "2026-10-21T00:00:00+00:00", "https://example.test/a", "same-guid")
-            second = NewsItem("Source B", "PQN", "Titre", "Extrait", "2026-10-21T00:00:00+00:00", "https://example.test/b", "same-guid")
+            first = NewsItem(
+                "Source A",
+                "PQN",
+                "Titre",
+                "Extrait",
+                "2026-10-21T00:00:00+00:00",
+                "https://example.test/a",
+                "same-guid",
+            )
+            second = NewsItem(
+                "Source B",
+                "PQN",
+                "Titre",
+                "Extrait",
+                "2026-10-21T00:00:00+00:00",
+                "https://example.test/b",
+                "same-guid",
+            )
             self.assertTrue(store_item(database, root / "articles_bruts", first))
             self.assertTrue(store_item(database, root / "articles_bruts", second))
             self.assertEqual(database.execute("SELECT COUNT(*) FROM articles").fetchone()[0], 2)

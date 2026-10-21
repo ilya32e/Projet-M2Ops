@@ -23,14 +23,19 @@ def apply_migrations(database: sqlite3.Connection, migrations_dir: Path) -> None
     database.execute("CREATE TABLE IF NOT EXISTS schema_migrations (version TEXT PRIMARY KEY)")
     for migration in sorted(migrations_dir.glob("*.sql")):
         version = migration.name.split("_", 1)[0]
-        if database.execute("SELECT 1 FROM schema_migrations WHERE version = ?", (version,)).fetchone():
+        applied = database.execute(
+            "SELECT 1 FROM schema_migrations WHERE version = ?", (version,)
+        ).fetchone()
+        if applied:
             continue
         database.executescript(migration.read_text(encoding="utf-8"))
         database.execute("INSERT INTO schema_migrations(version) VALUES (?)", (version,))
     database.commit()
 
 
-def initialize(database: sqlite3.Connection, sources: Iterable[Source], migrations_dir: Path) -> None:
+def initialize(
+    database: sqlite3.Connection, sources: Iterable[Source], migrations_dir: Path
+) -> None:
     apply_migrations(database, migrations_dir)
     source_list = list(sources)
     for source in source_list:
@@ -54,7 +59,12 @@ def active_sources(database: sqlite3.Connection) -> list[sqlite3.Row]:
     return list(database.execute("SELECT * FROM sources WHERE actif = 1 ORDER BY nom"))
 
 
-def mark_success(database: sqlite3.Connection, name: str, etag: str | None, last_modified: str | None) -> None:
+def mark_success(
+    database: sqlite3.Connection,
+    name: str,
+    etag: str | None,
+    last_modified: str | None,
+) -> None:
     database.execute(
         """UPDATE sources SET derniere_reussite=?, echecs_consecutifs=0, actif=1,
            etag=?, last_modified=?, derniere_erreur=NULL WHERE nom=?""",
@@ -71,7 +81,10 @@ def mark_failure(database: sqlite3.Connection, name: str, error: str) -> int:
         (error[:1000], name),
     )
     database.commit()
-    return int(database.execute("SELECT echecs_consecutifs FROM sources WHERE nom=?", (name,)).fetchone()[0])
+    row = database.execute(
+        "SELECT echecs_consecutifs FROM sources WHERE nom=?", (name,)
+    ).fetchone()
+    return int(row[0])
 
 
 def store_item(database: sqlite3.Connection, raw_dir: Path, item: NewsItem) -> bool:
@@ -98,6 +111,8 @@ def store_item(database: sqlite3.Connection, raw_dir: Path, item: NewsItem) -> b
         "rubrique": item.category,
         "payload": item.payload,
     }
-    (raw_dir / file_name).write_text(json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8")
+    (raw_dir / file_name).write_text(
+        json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     database.commit()
     return True

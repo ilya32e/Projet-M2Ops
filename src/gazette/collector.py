@@ -16,7 +16,10 @@ RETRYABLE = {408, 429, 500, 502, 503, 504}
 
 
 def fetch(url: str, headers: dict[str, str], timeout: int, retries: int = 3, sleep=time.sleep):
-    request_headers = {"User-Agent": "LaGazette/0.1 (+RSS reader; contact: team@example.invalid)", **headers}
+    request_headers = {
+        "User-Agent": "LaGazette/0.1 (+RSS reader; contact: team@example.invalid)",
+        **headers,
+    }
     for attempt in range(retries):
         try:
             request = Request(url, headers=request_headers)
@@ -53,9 +56,16 @@ def collect_once(
         if source_row["last_modified"]:
             headers["If-Modified-Since"] = source_row["last_modified"]
         try:
-            status, response_headers, payload = fetch(source_row["url_flux"], headers, timeout, retries)
+            status, response_headers, payload = fetch(
+                source_row["url_flux"], headers, timeout, retries
+            )
             if status == 304:
-                mark_success(database, source_row["nom"], source_row["etag"], source_row["last_modified"])
+                mark_success(
+                    database,
+                    source_row["nom"],
+                    source_row["etag"],
+                    source_row["last_modified"],
+                )
                 received = written = ignored = 0
             else:
                 source = next(s for s in load_sources(sources_file) if s.name == source_row["nom"])
@@ -63,15 +73,40 @@ def collect_once(
                 received = len(items)
                 written = sum(store_item(database, raw_dir, item) for item in items)
                 ignored = received - written
-                mark_success(database, source_row["nom"], response_headers.get("ETag"), response_headers.get("Last-Modified"))
+                mark_success(
+                    database,
+                    source_row["nom"],
+                    response_headers.get("ETag"),
+                    response_headers.get("Last-Modified"),
+                )
             counters["received"] += received
             counters["written"] += written
             counters["ignored"] += ignored
-            LOG.info(json.dumps({"source": source_row["nom"], "received": received, "written": written, "ignored": ignored, "duration_ms": round((time.monotonic() - started) * 1000)}))
+            LOG.info(
+                json.dumps(
+                    {
+                        "source": source_row["nom"],
+                        "received": received,
+                        "written": written,
+                        "ignored": ignored,
+                        "duration_ms": round((time.monotonic() - started) * 1000),
+                    }
+                )
+            )
         except Exception as error:
             counters["errors"] += 1
             failures = mark_failure(database, source_row["nom"], str(error))
-            LOG.error(json.dumps({"source": source_row["nom"], "error": str(error), "failures": failures, "sleeping": failures >= 3, "duration_ms": round((time.monotonic() - started) * 1000)}))
+            LOG.error(
+                json.dumps(
+                    {
+                        "source": source_row["nom"],
+                        "error": str(error),
+                        "failures": failures,
+                        "sleeping": failures >= 3,
+                        "duration_ms": round((time.monotonic() - started) * 1000),
+                    }
+                )
+            )
     database.close()
     LOG.info(json.dumps({"event": "collection_summary", **counters}))
     return counters
@@ -82,7 +117,12 @@ def main() -> int:
     parser.add_argument("--sources-file", type=Path, default=Path("sources.csv"))
     parser.add_argument("--db", type=Path, default=Path("data/gazette.sqlite3"))
     parser.add_argument("--raw-dir", type=Path, default=Path("articles_bruts"))
-    parser.add_argument("--interval", type=int, default=0, help="Intervalle en secondes; 0 exécute un seul passage")
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=0,
+        help="Intervalle en secondes; 0 exécute un seul passage",
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     while True:
