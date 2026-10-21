@@ -1,9 +1,5 @@
 # La Gazette - note de cadrage
 
-> Version 1.0 - 20 octobre 2026
->
-> **Responsable du dépôt :** Iliasse Mouradi (`ilya32e`)
-
 ## 1. Besoin reformulé
 
 Chaque matin à 7 h, **La Gazette** doit proposer une édition courte des sujets qui font l'actualité dans la presse quotidienne régionale (PQR) et nationale (PQN). L'édition regroupe les articles par thèmes et permet de retrouver la source originale.
@@ -61,24 +57,24 @@ Le schéma détaillé est dans [`architecture.md`](architecture.md). La chaîne 
 
 ## 5. Alternatives écartées
 
-| Alternative | Décision | Justification |
-|---|---|---|
-| Scraping HTML systématique | Écartée | Fragile, plus coûteux à maintenir et plus risqué au regard des CGU. |
-| API commerciales ou agrégateur payant | Écartée pour le MVP | Incompatible avec le budget nul et crée une dépendance externe. |
-| Recherche plein texte dans les articles | Écartée | Nécessiterait de conserver du contenu que le cadrage exclut. |
-| LLM pour résumer dès le TD1 | Reportée | La priorité est la robustesse de collecte, la traçabilité et la reproductibilité. |
-| Kubernetes dès le départ | Écartée | Surdimensionné pour une exécution quotidienne locale ; Docker Compose suffit au socle. |
+| Alternative                             | Décision             | Justification                                                                            |
+| --------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------- |
+| Scraping HTML systématique             | Écartée             | Fragile, plus coûteux à maintenir et plus risqué au regard des CGU.                   |
+| API commerciales ou agrégateur payant  | Écartée pour le MVP | Incompatible avec le budget nul et crée une dépendance externe.                        |
+| Recherche plein texte dans les articles | Écartée             | Nécessiterait de conserver du contenu que le cadrage exclut.                            |
+| LLM pour résumer dès le TD1           | Reportée             | La priorité est la robustesse de collecte, la traçabilité et la reproductibilité.    |
+| Kubernetes dès le départ              | Écartée             | Surdimensionné pour une exécution quotidienne locale ; Docker Compose suffit au socle. |
 
 ## 6. Risques et parades
 
-| Risque | Impact | Parade |
-|---|---|---|
-| Flux indisponible ou modifié | Édition incomplète | Timeout, retry borné, statut par source, alerte et conservation du dernier succès. |
-| Doublons entre flux | Édition bruitée | URL canonique puis empreinte normalisée titre/source/date. |
-| Date absente ou ambiguë | Mauvais filtrage 24 h | Rejeter l'entrée et journaliser la cause ; ne jamais inventer la date. |
-| Changement de conditions d'utilisation | Risque juridique | Revue périodique des CGU/robots et arrêt du connecteur en cas de doute. |
-| Retard de traitement | SLA 7 h manqué | Mesure de durée, seuil d'alerte et traitement parallèle limité par domaine. |
-| Mauvaise catégorisation | Édition peu lisible | Taxonomie versionnée, règles testées et revue manuelle des cas limites. |
+| Risque                                 | Impact                | Parade                                                                               |
+| -------------------------------------- | --------------------- | ------------------------------------------------------------------------------------ |
+| Flux indisponible ou modifié          | Édition incomplète  | Timeout, retry borné, statut par source, alerte et conservation du dernier succès. |
+| Doublons entre flux                    | Édition bruitée     | URL canonique puis empreinte normalisée titre/source/date.                          |
+| Date absente ou ambiguë               | Mauvais filtrage 24 h | Rejeter l'entrée et journaliser la cause ; ne jamais inventer la date.              |
+| Changement de conditions d'utilisation | Risque juridique      | Revue périodique des CGU/robots et arrêt du connecteur en cas de doute.            |
+| Retard de traitement                   | SLA 7 h manqué       | Mesure de durée, seuil d'alerte et traitement parallèle limité par domaine.       |
+| Mauvaise catégorisation               | Édition peu lisible  | Taxonomie versionnée, règles testées et revue manuelle des cas limites.           |
 
 ## 7. Rôles de l'équipe
 

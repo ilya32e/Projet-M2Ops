@@ -2,8 +2,6 @@
 
 Socle du pipeline de veille presse du projet M2OPS.
 
-Responsable du dépôt : Iliasse Mouradi (`ilya32e`).
-
 Le TD2 fournit :
 
 - un parseur RSS/Atom sans collecte de texte intégral ;

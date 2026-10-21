@@ -1,29 +1,5 @@
 # Schéma d'architecture - La Gazette
 
-**Responsable du dépôt :** Iliasse Mouradi (`ilya32e`)
-
-```mermaid
-flowchart LR
-    S[8 sources RSS\n4 PQR + 4 PQN] --> C[1. Collecte des flux\nConnecteurs HTTP/RSS]
-    C -->|réponses brutes\n+ horodatage| B[2. Stockage brut\nJSON Lines / fichiers immuables]
-    B -->|items candidats| Q[3. Nettoyage & contrôle qualité\nSchéma, dates, URL, doublons]
-    Q -->|items valides| T[4. Regroupement par thèmes\nTaxonomie versionnée]
-    T -->|titres + extraits courts\nliens + dates| E[5. Livraison de l'édition\nMarkdown + JSON, 07:00]
-    C -. métriques .-> O[6. Supervision\nLogs, compteurs, alertes]
-    Q -. erreurs .-> O
-    T -. volumes .-> O
-    E -. statut SLA .-> O
-
-    subgraph Runtime[Exécution locale puis conteneurisée]
-      C
-      B
-      Q
-      T
-      E
-      O
-    end
-```
-
 ## Contrats de données
 
 - **Entrée RSS** : `source`, `source_type`, `title`, `summary`, `published_at`, `url`.
