@@ -1,20 +1,32 @@
-FROM python:3.12-slim
+FROM python:3.12-slim AS builder
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app/src
+ENV VIRTUAL_ENV=/opt/venv \
+    PATH="/opt/venv/bin:$PATH"
 
-WORKDIR /app
+WORKDIR /build
 
 COPY pyproject.toml README.md ./
 COPY src ./src
+
+RUN python -m venv "$VIRTUAL_ENV" \
+    && pip install --no-cache-dir --no-deps .
+
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/opt/venv \
+    PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /app
+
+COPY --from=builder /opt/venv /opt/venv
 COPY sources.csv ./sources.csv
 
-RUN pip install --no-cache-dir --no-deps . \
-    && addgroup --system gazette \
+RUN addgroup --system gazette \
     && adduser --system --ingroup gazette gazette \
     && mkdir -p /app/data \
-    && chown -R gazette:gazette /app
+    && chown -R gazette:gazette /app /opt/venv
 
 USER gazette
 
