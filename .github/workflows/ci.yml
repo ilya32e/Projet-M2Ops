@@ -24,6 +24,8 @@ jobs:
           python-version: "3.12"
       - name: Installer les outils de vérification
         run: python -m pip install --upgrade pip ruff
+      - name: Installer le projet et ses dépendances
+        run: python -m pip install --editable .
       - name: Lint
         run: ruff check .
       - name: Tests
