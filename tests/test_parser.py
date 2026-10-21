@@ -16,6 +16,7 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(items[0].title, "Un titre de test")
         self.assertEqual(items[0].excerpt, "Un extrait & court pour vérifier le parseur.")
         self.assertEqual(items[0].url, "https://example.test/article-1")
+        self.assertEqual(items[0].published_at, "2026-10-19T05:00:00+00:00")
 
 
 if __name__ == "__main__":

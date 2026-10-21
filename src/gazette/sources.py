@@ -18,6 +18,7 @@ def load_sources(path: Path) -> list[Source]:
                 region=row["region"].strip(),
                 address=row["adresse"].strip(),
                 format=row["format"].strip(),
+                active=row.get("actif", "1").strip().lower() not in {"0", "false", "non"},
             )
             for row in rows
             if row.get("nom", "").strip()

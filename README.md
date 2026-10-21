@@ -44,6 +44,17 @@ docker compose up --build
 
 Le service `app` exécute la collecte ; `postgres` est déjà déclaré pour le stockage indexé du TD3. Le premier incrément écrit les données dans le volume `gazette-data` et n'utilise pas encore PostgreSQL.
 
+## Collecte du TD3
+
+La collecte multi-sources se lance en continu toutes les 30 minutes :
+
+```powershell
+bin\collect.ps1
+```
+
+Elle utilise SQLite dans `data/gazette.sqlite3` et écrit les items bruts dans `articles_bruts/`.
+Les sources en échec trois fois de suite sont automatiquement mises en sommeil. Les détails des champs sont décrits dans [`docs/donnees.md`](docs/donnees.md).
+
 ## Structure
 
 ```text

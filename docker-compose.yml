@@ -7,7 +7,8 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - gazette-data:/app/data
+      - ./data:/app/data
+      - ./articles_bruts:/app/articles_bruts
 
   postgres:
     image: postgres:16-alpine
@@ -24,5 +25,4 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  gazette-data:
   postgres-data:

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -8,6 +8,7 @@ class Source:
     region: str
     address: str
     format: str
+    active: bool = True
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,9 @@ class NewsItem:
     excerpt: str
     published_at: str
     url: str
+    guid: str = ""
+    category: str = ""
+    payload: dict[str, str] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, str]:
         return {

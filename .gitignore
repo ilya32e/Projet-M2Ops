@@ -1,8 +1,11 @@
 .venv/
+*.egg-info/
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
 data/*.jsonl
+data/*.sqlite3
 !data/.gitkeep
+articles_bruts/*.json
 .env

@@ -22,6 +22,7 @@ WORKDIR /app
 
 COPY --from=builder /opt/venv /opt/venv
 COPY sources.csv ./sources.csv
+COPY migrations ./migrations
 
 RUN addgroup --system gazette \
     && adduser --system --ingroup gazette gazette \
@@ -30,5 +31,5 @@ RUN addgroup --system gazette \
 
 USER gazette
 
-ENTRYPOINT ["python", "-m", "gazette.cli"]
-CMD ["--source", "Le Monde", "--output", "/app/data/items.jsonl"]
+ENTRYPOINT ["python", "-m", "gazette.collector"]
+CMD ["--interval", "1800"]

@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+export PYTHONPATH="$(CDPATH= cd -- "$(dirname -- "$0")/../src" && pwd)"
+exec python -m gazette.collector --interval "${GAZETTE_INTERVAL_SECONDS:-1800}"
