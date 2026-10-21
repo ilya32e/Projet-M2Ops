@@ -39,7 +39,7 @@ python -m unittest discover -s tests -v
 ## Docker Compose
 
 ```powershell
-docker compose up --build
+docker compose --profile local up --build
 ```
 
 Le service `app` exécute la collecte ; `postgres` est déjà déclaré pour le stockage indexé du TD3. Le premier incrément écrit les données dans le volume `gazette-data` et n'utilise pas encore PostgreSQL.
@@ -54,6 +54,16 @@ bin\collect.ps1
 
 Elle utilise SQLite dans `data/gazette.sqlite3` et écrit les items bruts dans `articles_bruts/`.
 Les sources en échec trois fois de suite sont automatiquement mises en sommeil. Les détails des champs sont décrits dans [`docs/donnees.md`](docs/donnees.md).
+
+## Orchestration Airflow
+
+Airflow exécute le DAG `gazette_collecte` toutes les 30 minutes. Pour lancer le scheduler et l'interface :
+
+```powershell
+docker compose --profile airflow up --build
+```
+
+L'interface est disponible sur `http://localhost:8080` avec `admin` / `admin`. Le DAG réutilise le collecteur Python et conserve la base SQLite ainsi que les fichiers JSON dans `data/` et `articles_bruts/`. Les détails sont dans [`docs/airflow.md`](docs/airflow.md).
 
 ## Structure
 
