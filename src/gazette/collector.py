@@ -15,6 +15,16 @@ LOG = logging.getLogger("gazette.collector")
 RETRYABLE = {408, 429, 500, 502, 503, 504}
 
 
+def _retry_delay(headers, attempt: int) -> int:
+    retry_after = headers.get("Retry-After") if headers else None
+    if retry_after:
+        try:
+            return max(0, int(retry_after))
+        except (TypeError, ValueError):
+            pass
+    return 2**attempt
+
+
 def fetch(url: str, headers: dict[str, str], timeout: int, retries: int = 3, sleep=time.sleep):
     request_headers = {
         "User-Agent": "LaGazette/0.1 (+RSS reader; contact: team@example.invalid)",
@@ -30,10 +40,12 @@ def fetch(url: str, headers: dict[str, str], timeout: int, retries: int = 3, sle
                 return 304, error.headers, b""
             if error.code not in RETRYABLE or attempt == retries - 1:
                 raise
+            delay = _retry_delay(error.headers, attempt)
         except (URLError, TimeoutError, socket.timeout):
             if attempt == retries - 1:
                 raise
-        sleep(2**attempt)
+            delay = 2**attempt
+        sleep(delay)
     raise RuntimeError("fetch failed")
 
 

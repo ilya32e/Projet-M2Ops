@@ -6,7 +6,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from gazette.collector import collect_once
+from gazette.collector import collect_once, fetch
 from gazette.models import NewsItem, Source
 from gazette.storage import active_sources, connect, initialize, store_item
 
@@ -64,6 +64,48 @@ class CollectorTest(unittest.TestCase):
             self.assertEqual(len(list((root / "articles_bruts").glob("*.json"))), 1)
             document = json.loads(next((root / "articles_bruts").glob("*.json")).read_text())
             self.assertEqual(document["lien"], "https://example.test/article-1")
+
+    def test_retry_uses_exponential_backoff(self):
+        FeedHandler.failures_left = 2
+        delays = []
+        status, _, payload = fetch(
+            f"http://127.0.0.1:{self.server.server_port}",
+            {},
+            timeout=2,
+            retries=3,
+            sleep=delays.append,
+        )
+        self.assertEqual(status, 200)
+        self.assertTrue(payload)
+        self.assertEqual(delays, [1, 2])
+
+    def test_retry_after_overrides_exponential_backoff(self):
+        class RetryAfterHandler(FeedHandler):
+            def do_GET(self):  # noqa: N802
+                if type(self).failures_left:
+                    type(self).failures_left -= 1
+                    self.send_response(429)
+                    self.send_header("Retry-After", "7")
+                    self.end_headers()
+                    return
+                super().do_GET()
+
+        self.server.shutdown()
+        self.server.server_close()
+        self.server = HTTPServer(("127.0.0.1", 0), RetryAfterHandler)
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+        RetryAfterHandler.failures_left = 1
+        delays = []
+        status, _, _ = fetch(
+            f"http://127.0.0.1:{self.server.server_port}",
+            {},
+            timeout=2,
+            retries=2,
+            sleep=delays.append,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(delays, [7])
 
     def test_three_failures_put_source_to_sleep(self):
         FeedHandler.failures_left = 3
