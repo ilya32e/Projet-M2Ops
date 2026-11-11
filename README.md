@@ -47,6 +47,10 @@ Ou directement :
 python -m unittest discover -s tests -v
 ```
 
+## Contribuer
+
+`main` est protégée : chaque changement passe par une branche, une pull request, la CI verte et une approbation. Les conventions (nommage des branches, format des commits, qui fusionne) sont dans [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Docker Compose
 
 ```powershell
