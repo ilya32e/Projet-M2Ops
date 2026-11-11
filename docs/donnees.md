@@ -21,8 +21,10 @@ La table SQLite `sources` est alimentée depuis [sources.csv](../sources.csv) et
 
 Chaque entrée est écrite une seule fois dans `articles_bruts/` selon la clé naturelle `(source, lien)`.
 Le fichier JSON contient `id`, `source`, `lien`, `titre`, `resume`, `publie_le`, `recupere_le`, `rubrique` et `payload`.
-Le `payload` conserve l’entrée normalisée et le XML du flux reçu pour audit et rejeu ;
-aucun article HTML complet, image binaire ou commentaire n’est collecté.
+Le `payload` conserve uniquement l’entrée normalisée (titre, extrait de 280 caractères au plus, date, lien, guid, rubrique).
+Le flux XML complet n’est **pas** conservé : il contient des noms d’auteurs (`dc:creator`, `author`) et des liens d’images.
+Les fichiers collectés avant le 11/11/2026 se mettent en conformité avec `python -m gazette.conformite`.
+Aucun article HTML complet, image ou commentaire n’est collecté.
 
 ## Articles propres (TD 4)
 
@@ -71,7 +73,7 @@ Le fichier `articles_bruts/<fichier_brut>` contient l'entrée et le flux XML re�
 
 **Ce qu'on stocke** : titre, extrait court (280 caractères au plus), lien, date, source, rubrique. C'est ce qu'on a le droit de republier : un index qui renvoie vers l'éditeur.
 
-**Ce qu'on ne stocke pas** : le texte intégral des articles, les images, les commentaires, les noms d'auteurs ou toute autre donnée personnelle, ni le contenu des sources désactivées faute d'autorisation (Le Monde) ou qui refusent les robots.
+**Ce qu'on ne stocke pas** : le texte intégral des articles, les images, les commentaires, les noms d'auteurs (présents dans les flux de Libération, La Croix, L'Humanité et 20 Minutes, mais jamais enregistrés) ou toute autre donnée personnelle, ni le contenu des sources désactivées faute d'autorisation (Le Monde) ou qui refusent les robots.
 
 **Fraîcheur** : collecte toutes les 30 minutes ; une source active sans collecte réussie depuis 2 heures déclenche le contrôle `C05_fraicheur_collecte`. L'édition ne retient que les articles publiés depuis moins de 24 heures.
 

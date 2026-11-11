@@ -119,4 +119,5 @@ raison.
 | Date | Règle | Changement | Pourquoi |
 |---|---|---|---|
 | 2026-11-11 | R04_jeux | « résultats du loto » seulement, pas « loto » seul | « Loto : il découvre qu'il a gagné le jackpot » est un fait divers |
+| 2026-11-11 | Stockage brut | le flux XML complet n'est plus conservé dans `articles_bruts/` | il contenait des noms d'auteurs (`dc:creator`, `author`) : donnée personnelle interdite |
 | 2026-11-11 | R09_doublon_approche | seuil fixé à 0,8 | à 0,7, « … situation du mardi 10 » et « … du mercredi 11 » (La Croix, deux jours différents) étaient fusionnés à tort (0,76) |

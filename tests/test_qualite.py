@@ -1,8 +1,10 @@
+import json
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from gazette.conformite import purger_flux_bruts
 from gazette.controles import controler
 from gazette.models import NewsItem, Source
 from gazette.nettoyage import ecrire_rapport, nettoyer
@@ -106,6 +108,17 @@ class QualiteTest(unittest.TestCase):
         self.assertIn("de nouveau OK", envoyes[1])
         mesures = self.database.execute("SELECT COUNT(*) FROM mesures_qualite").fetchone()[0]
         self.assertGreater(mesures, 0)
+
+    def test_purge_retire_le_flux_xml_des_anciens_bruts(self):
+        self.bruts.mkdir(parents=True, exist_ok=True)
+        ancien = self.bruts / "ancien.json"
+        ancien.write_text(json.dumps({"payload": {"entry": {"title": "T"},
+                                                  "feed_xml": "<dc:creator>X</dc:creator>"}}),
+                          encoding="utf-8")
+        self.assertEqual(purger_flux_bruts(self.bruts), 1)
+        self.assertEqual(json.loads(ancien.read_text(encoding="utf-8")),
+                         {"payload": {"entry": {"title": "T"}}})
+        self.assertEqual(purger_flux_bruts(self.bruts), 0)
 
 
 if __name__ == "__main__":
