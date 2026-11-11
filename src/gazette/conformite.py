@@ -1,9 +1,9 @@
 """Mise en conformité des items bruts déjà collectés.
 
-Avant le 11/11/2026, chaque fichier de articles_bruts/ gardait le flux XML complet
-(`payload.feed_xml`), qui contient des noms d'auteurs (dc:creator, author) et des liens
-d'images. Cette commande retire ce champ des fichiers existants ; les nouveaux fichiers
-ne le contiennent plus. Opération irréversible : seule l'entrée normalisée est gardée.
+Avant le 11/11/2026, les fichiers de articles_bruts/ gardaient le XML reçu
+(`payload.feed_xml`, ou `payload.raw_xml` pour les tout premiers), qui contient des
+noms d'auteurs (dc:creator, author) et des liens d'images. Cette commande retire ces
+champs des fichiers existants ; les nouveaux fichiers ne les contiennent plus. Opération irréversible : seule l'entrée normalisée est gardée.
 
     python -m gazette.conformite --raw-dir articles_bruts
 """
@@ -12,14 +12,19 @@ import argparse
 import json
 from pathlib import Path
 
+CHAMPS_XML = ("feed_xml", "raw_xml")
+
 
 def purger_flux_bruts(raw_dir: Path) -> int:
-    """Retire `payload.feed_xml` de chaque fichier brut ; renvoie le nombre de fichiers modifiés."""
+    """Retire le XML reçu de chaque fichier brut ; renvoie le nombre de fichiers modifiés."""
     modifies = 0
     for chemin in sorted(raw_dir.glob("*.json")):
         document = json.loads(chemin.read_text(encoding="utf-8"))
-        if "feed_xml" in document.get("payload", {}):
-            del document["payload"]["feed_xml"]
+        payload = document.get("payload", {})
+        presents = [champ for champ in CHAMPS_XML if champ in payload]
+        if presents:
+            for champ in presents:
+                del payload[champ]
             chemin.write_text(json.dumps(document, ensure_ascii=False, indent=2),
                               encoding="utf-8")
             modifies += 1

@@ -115,9 +115,14 @@ class QualiteTest(unittest.TestCase):
         ancien.write_text(json.dumps({"payload": {"entry": {"title": "T"},
                                                   "feed_xml": "<dc:creator>X</dc:creator>"}}),
                           encoding="utf-8")
-        self.assertEqual(purger_flux_bruts(self.bruts), 1)
+        premier = self.bruts / "premier.json"
+        premier.write_text(json.dumps({"payload": {"title": "T", "raw_xml": "<item/>"}}),
+                           encoding="utf-8")
+        self.assertEqual(purger_flux_bruts(self.bruts), 2)
         self.assertEqual(json.loads(ancien.read_text(encoding="utf-8")),
                          {"payload": {"entry": {"title": "T"}}})
+        self.assertEqual(json.loads(premier.read_text(encoding="utf-8")),
+                         {"payload": {"title": "T"}})
         self.assertEqual(purger_flux_bruts(self.bruts), 0)
 
 
