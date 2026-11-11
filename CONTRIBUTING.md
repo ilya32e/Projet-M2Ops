@@ -4,7 +4,9 @@
 
 - `main` reste toujours dans un état construisible et testable.
 - Une branche courte est créée par sujet, par exemple `feat/rss-parser` ou `fix/date-filter`.
-- Toute fusion passe par une revue, même rapide.
+- Toute fusion passe par une pull request : la branche `main` est protégée, aucun push direct.
+- Une PR ne peut être fusionnée qu'avec la CI verte (job `check`) et au moins une approbation d'un·e autre membre de l'équipe.
+- C'est l'auteur·e de la PR qui fusionne, après approbation, puis supprime sa branche.
 
 ## Commits
 
