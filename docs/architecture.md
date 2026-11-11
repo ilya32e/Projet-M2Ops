@@ -1,5 +1,32 @@
 # Schéma d'architecture - La Gazette
 
+## Vue d'ensemble
+
+```mermaid
+flowchart LR
+    A[Collecte des flux RSS<br/>connecteurs Python] -->|flux XML et métadonnées| B[Stockage brut<br/>JSONL + articles_bruts/]
+    B -->|items bruts| C[Nettoyage et contrôle qualité<br/>validation, fraîcheur, doublons]
+    C -->|items normalisés| D[Regroupement par thèmes<br/>taxonomie versionnée]
+    D -->|items classés| E[Livraison de l'édition<br/>Markdown/JSON à 7 h]
+    F[Supervision<br/>logs, métriques, alertes] -. observe .-> A
+    F -. observe .-> B
+    F -. observe .-> C
+    F -. observe .-> D
+    F -. observe .-> E
+
+    G[Ordonnanceur<br/>Airflow / tâche planifiée] --> A
+    H[Exécution locale ou conteneurisée<br/>Docker Compose] -. héberge .-> A
+    H -. héberge .-> B
+    H -. héberge .-> C
+    H -. héberge .-> D
+    H -. héberge .-> E
+    H -. héberge .-> F
+```
+
+Le déclenchement planifié lance la collecte avant 7 h. Les données circulent sous
+forme de flux RSS puis d'items normalisés ; seules les métadonnées autorisées
+(titre, extrait, lien, date et source) sont transmises à l'édition.
+
 ## Contrats de données
 
 - **Entrée RSS** : `source`, `source_type`, `title`, `summary`, `published_at`, `url`.
