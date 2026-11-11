@@ -5,12 +5,14 @@ services:
     build: .
     environment:
       GAZETTE_TIMEOUT_SECONDS: "15"
+      GAZETTE_ALERT_WEBHOOK: ${GAZETTE_ALERT_WEBHOOK:-}
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - ./data:/app/data
       - ./articles_bruts:/app/articles_bruts
+      - ./rapports:/app/rapports
 
   airflow-init:
     profiles: [airflow]
@@ -26,6 +28,7 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
       _PIP_ADDITIONAL_REQUIREMENTS: ""
+      GAZETTE_ALERT_WEBHOOK: ${GAZETTE_ALERT_WEBHOOK:-}
     volumes: &airflow-volumes
       - ./airflow/dags:/opt/airflow/dags
       - ./sources.csv:/opt/gazette/sources.csv:ro
@@ -33,6 +36,7 @@ services:
       - ./src:/opt/gazette/src:ro
       - ./data:/opt/gazette/data
       - ./articles_bruts:/opt/gazette/articles_bruts
+      - ./rapports:/opt/gazette/rapports
     command: >-
       bash -c "airflow db migrate &&
       airflow users create --username admin --password admin --firstname Admin

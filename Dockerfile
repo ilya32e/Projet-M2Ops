@@ -26,10 +26,10 @@ COPY migrations ./migrations
 
 RUN addgroup --system gazette \
     && adduser --system --uid 50000 --ingroup gazette gazette \
-    && mkdir -p /app/data \
+    && mkdir -p /app/data /app/rapports \
     && chown -R gazette:gazette /app /opt/venv
 
 USER gazette
 
-ENTRYPOINT ["python", "-m", "gazette.collector"]
+ENTRYPOINT ["python", "-m", "gazette.pipeline"]
 CMD ["--interval", "1800"]
