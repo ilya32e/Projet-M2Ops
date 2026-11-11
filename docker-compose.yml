@@ -1,5 +1,6 @@
 services:
   app:
+    restart: unless-stopped
     profiles: [local]
     build: .
     environment:
@@ -38,6 +39,7 @@ services:
       --lastname Gazette --role Admin --email admin@example.invalid || true"
 
   airflow-webserver:
+    restart: unless-stopped
     profiles: [airflow]
     build:
       context: .
@@ -48,10 +50,11 @@ services:
     environment: *airflow-environment
     volumes: *airflow-volumes
     ports:
-      - "8080:8080"
+      - "${AIRFLOW_PORT:-8080}:8080"
     command: webserver
 
   airflow-scheduler:
+    restart: unless-stopped
     profiles: [airflow]
     build:
       context: .
@@ -64,6 +67,7 @@ services:
     command: scheduler
 
   airflow-postgres:
+    restart: unless-stopped
     profiles: [airflow]
     image: postgres:16-alpine
     environment:
@@ -79,6 +83,7 @@ services:
       - airflow-postgres-data:/var/lib/postgresql/data
 
   postgres:
+    restart: unless-stopped
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: gazette

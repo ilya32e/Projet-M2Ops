@@ -68,7 +68,14 @@ bin\collect.ps1
 ```
 
 Elle utilise SQLite dans `data/gazette.sqlite3` et écrit les items bruts dans `articles_bruts/`.
-Les sources en échec trois fois de suite sont automatiquement mises en sommeil. Les détails des champs sont décrits dans [`docs/donnees.md`](docs/donnees.md).
+Les sources en échec trois fois de suite sont automatiquement mises en sommeil (nouvel essai 6 h plus tard).
+Pour voir l'état de chaque source (dernière réussite, échecs, sommeil, nombre d'articles) :
+
+```powershell
+bin\status.ps1
+```
+
+La commande renvoie le code 2 si au moins une source est en sommeil, ce qui permet de l'utiliser dans un script d'alerte. Les détails des champs sont décrits dans [`docs/donnees.md`](docs/donnees.md).
 
 ## Orchestration Airflow
 
@@ -77,6 +84,8 @@ Airflow exécute le DAG `gazette_collecte` toutes les 30 minutes. Pour lancer le
 ```powershell
 docker compose --profile airflow up --build
 ```
+
+Les services redémarrent automatiquement avec Docker (`restart: unless-stopped`) : la collecte reprend seule après un redémarrage du PC, tant que Docker Desktop se lance au démarrage. Si le port 8080 est déjà pris, choisir un autre port avec la variable `AIRFLOW_PORT` (par exemple `$env:AIRFLOW_PORT=8081`).
 
 L'interface est disponible sur `http://localhost:8080` avec `admin` / `admin`. Le DAG réutilise le collecteur Python et conserve la base SQLite ainsi que les fichiers JSON dans `data/` et `articles_bruts/`. Les détails sont dans [`docs/airflow.md`](docs/airflow.md).
 

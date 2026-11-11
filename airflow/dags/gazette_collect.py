@@ -13,6 +13,7 @@ def run_collection() -> dict[str, int]:
         sources_file=Path("/opt/gazette/sources.csv"),
         db_path=Path("/opt/gazette/data/gazette.sqlite3"),
         raw_dir=Path("/opt/gazette/articles_bruts"),
+        migrations_dir=Path("/opt/gazette/migrations"),
     )
 
 
