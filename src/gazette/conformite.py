@@ -3,7 +3,8 @@
 Avant le 11/11/2026, les fichiers de articles_bruts/ gardaient le XML reçu
 (`payload.feed_xml`, ou `payload.raw_xml` pour les tout premiers), qui contient des
 noms d'auteurs (dc:creator, author) et des liens d'images. Cette commande retire ces
-champs des fichiers existants ; les nouveaux fichiers ne les contiennent plus. Opération irréversible : seule l'entrée normalisée est gardée.
+champs des fichiers existants ; les nouveaux fichiers ne les contiennent plus.
+Opération irréversible : seule l'entrée normalisée est gardée.
 
     python -m gazette.conformite --raw-dir articles_bruts
 """
