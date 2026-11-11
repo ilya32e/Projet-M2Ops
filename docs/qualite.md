@@ -100,6 +100,17 @@ pour le TD 8. Un contrôle en échec met aussi la tâche Airflow en rouge.
 échec, et un second quand il redevient bon. Pas de message répété toutes les 30 minutes.
 Pour tester le canal : `python -m gazette.controles --tester-alerte`.
 
+### Preuve : alerte déclenchée le 11 novembre 2026
+
+Le canal a d'abord été testé, puis l'alerte a été déclenchée pour de vrai : les contrôles
+ont tourné sur les données réelles avec un seuil de taux de rejet volontairement strict
+(5 % au lieu de 80 %). Ouest-France, qui rejetait 8 % de ses items ce jour-là, a fait
+passer `C04_taux_rejet_max` en échec et l'alerte est partie sur `#alertes-gazette`. Au
+passage Airflow suivant, avec le seuil normal, le contrôle est redevenu bon et le message
+de retour à la normale a été envoyé.
+
+![Alertes reçues sur le salon Discord #alertes-gazette](preuves/alerte-discord-2026-11-11.png)
+
 ## Journal des ajustements
 
 À compléter après lecture du rapport trois matins de suite : date, règle, changement,
