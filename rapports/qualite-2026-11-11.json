@@ -1,7 +1,7 @@
 {
   "jour": "2026-11-11",
-  "entres": 549,
-  "gardes": 543,
+  "entres": 550,
+  "gardes": 544,
   "rejetes": 6,
   "par_regle": {
     "R09_doublon_approche": 4,
@@ -59,8 +59,8 @@
     },
     {
       "source": "Le Progrès",
-      "entres": 21,
-      "gardes": 21,
+      "entres": 22,
+      "gardes": 22,
       "rejetes": 0,
       "taux_rejet": 0.0
     },
