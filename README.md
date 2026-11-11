@@ -7,7 +7,16 @@
 
 Le projet n'a pas de dépendance Python runtime externe : il utilise la bibliothèque standard pour garder le premier incrément facile à reproduire.
 
-## Lancer localement
+## Démarrage rapide (deux commandes)
+
+```powershell
+git clone https://github.com/ilya32e/Projet-M2Ops.git; cd Projet-M2Ops
+docker compose --profile local up --build
+```
+
+Seul Docker est nécessaire. La collecte tourne toutes les 30 minutes ; les items arrivent dans `articles_bruts/` et l'état des sources dans `data/gazette.sqlite3`.
+
+## Lancer sans Docker
 
 ```powershell
 python -m venv .venv
@@ -16,7 +25,9 @@ python -m pip install -e .
 bin\dev.ps1
 ```
 
-La commande lit la source `Le Monde` dans `sources.csv`. Elle produit `data/items.jsonl` et ne conserve que le titre, un extrait court, le lien, la date et les métadonnées de source.
+Si Windows refuse d'exécuter le script (politique d'exécution), lancer `powershell -ExecutionPolicy Bypass -File bin\dev.ps1`.
+
+La commande lit une seule source (`Ouest-France` par défaut, modifiable avec la variable `GAZETTE_SOURCE`). Une source marquée `actif=0` dans `sources.csv` est refusée. Elle produit `data/items.jsonl` et ne conserve que le titre, un extrait court, le lien, la date et les métadonnées de source.
 
 Pour choisir une autre source :
 
@@ -42,7 +53,7 @@ python -m unittest discover -s tests -v
 docker compose --profile local up --build
 ```
 
-Le service `app` exécute la collecte ; `postgres` est déjà déclaré pour le stockage indexé du TD3. Le premier incrément écrit les données dans le volume `gazette-data` et n'utilise pas encore PostgreSQL.
+Le service `app` exécute la collecte de toutes les sources actives ; `postgres` est déclaré pour la mise en production mais n'est pas encore utilisé : les données sont écrites dans `data/` et `articles_bruts/`, montés depuis le dépôt.
 
 ## Collecte du TD3
 

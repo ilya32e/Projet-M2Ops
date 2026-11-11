@@ -1,6 +1,8 @@
 import unittest
 from pathlib import Path
+from unittest import mock
 
+from gazette import cli
 from gazette.sources import find_source, load_sources
 
 
@@ -14,6 +16,13 @@ class SourcesTest(unittest.TestCase):
     def test_find_source_is_case_insensitive(self) -> None:
         source = find_source(Path("sources.csv"), "le monde")
         self.assertEqual(source.name, "Le Monde")
+
+    def test_cli_refuses_inactive_source(self) -> None:
+        argv = ["gazette", "--source", "Le Monde", "--output", "unused.jsonl"]
+        with mock.patch("sys.argv", argv), mock.patch.object(cli, "fetch") as fetch:
+            with self.assertRaises(SystemExit):
+                cli.main()
+        fetch.assert_not_called()
 
 
 if __name__ == "__main__":

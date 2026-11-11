@@ -25,6 +25,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_parser().parse_args()
     source = find_source(args.sources_file, args.source)
+    if not source.active:
+        raise SystemExit(f"Source désactivée dans sources.csv (actif=0): {source.name}")
     payload = fetch(source.address, int(os.getenv("GAZETTE_TIMEOUT_SECONDS", "15")))
     items = parse_feed(payload, source)
     args.output.parent.mkdir(parents=True, exist_ok=True)
