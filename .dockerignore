@@ -6,3 +6,6 @@ __pycache__
 tests
 data/*.jsonl
 *.pdf
+data/
+articles_bruts/
+rapports/

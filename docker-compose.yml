@@ -33,6 +33,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./sources.csv:/opt/gazette/sources.csv:ro
       - ./migrations:/opt/gazette/migrations:ro
+      - ./config:/opt/gazette/config:ro
       - ./src:/opt/gazette/src:ro
       - ./data:/opt/gazette/data
       - ./articles_bruts:/opt/gazette/articles_bruts

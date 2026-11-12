@@ -9,6 +9,10 @@ description = "Collecte RSS/Atom minimale pour La Gazette"
 requires-python = ">=3.10"
 dependencies = [
     "feedparser>=6.0.14,<7",
+    "fastembed>=0.7,<1",
+    "scikit-learn>=1.5,<2",
+    "numpy>=1.26",
+    "pyyaml>=6,<7",
 ]
 
 [tool.setuptools.packages.find]

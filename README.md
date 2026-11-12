@@ -81,6 +81,16 @@ La commande renvoie le code 2 si au moins une source est en sommeil, ce qui perm
 
 Après chaque collecte, le DAG nettoie les items (`articles_propres` / `rejets`), vérifie six contrôles de qualité et écrit le rapport du jour dans `rapports/qualite-AAAA-MM-JJ.md`. Une alerte part sur Discord quand un contrôle passe en échec : copier `.env.example` en `.env` et y mettre l'adresse du webhook. Détails dans [`docs/qualite.md`](docs/qualite.md).
 
+## Thèmes du jour (TD 5)
+
+Quatre fois par jour, après le nettoyage, le DAG regroupe les articles des dernières 24 heures en thèmes nommés (modèle multilingue sur processeur, HDBSCAN). Chaque run est tracé dans la table `runs`. Paramètres dans [`config/clustering.yaml`](config/clustering.yaml), explications dans [`docs/mlops.md`](docs/mlops.md). Pour lancer un run à la main :
+
+```powershell
+$env:PYTHONPATH="src"; python -m gazette.regroupement
+```
+
+Le premier lancement télécharge le modèle (environ 240 Mo) dans `data/modeles/`.
+
 ## Orchestration Airflow
 
 Airflow exécute le DAG `gazette_collecte` toutes les 30 minutes. Pour lancer le scheduler et l'interface :
