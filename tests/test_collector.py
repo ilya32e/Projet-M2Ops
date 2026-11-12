@@ -8,6 +8,7 @@ from tempfile import TemporaryDirectory
 
 from gazette.collector import collect_once, fetch
 from gazette.models import NewsItem, Source
+from gazette.status import source_states
 from gazette.storage import active_sources, connect, initialize, store_item
 
 
@@ -126,6 +127,9 @@ class CollectorTest(unittest.TestCase):
             database.close()
             self.assertEqual(active, 0)
             self.assertEqual(failures, 3)
+            state = source_states(root / "gazette.sqlite3")[0]
+            self.assertEqual(state["etat"], "en sommeil")
+            self.assertIn("503", state["derniere_erreur"])
 
     def test_sleeping_source_can_be_retried_after_cooldown(self):
         with TemporaryDirectory() as directory:

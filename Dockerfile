@@ -25,7 +25,7 @@ COPY sources.csv ./sources.csv
 COPY migrations ./migrations
 
 RUN addgroup --system gazette \
-    && adduser --system --ingroup gazette gazette \
+    && adduser --system --uid 50000 --ingroup gazette gazette \
     && mkdir -p /app/data \
     && chown -R gazette:gazette /app /opt/venv
 

@@ -55,9 +55,10 @@ def collect_once(
     raw_dir: Path = Path("articles_bruts"),
     timeout: int = 15,
     retries: int = 3,
+    migrations_dir: Path = Path("migrations"),
 ) -> dict[str, int]:
     database = connect(db_path)
-    initialize(database, load_sources(sources_file), Path("migrations"))
+    initialize(database, load_sources(sources_file), migrations_dir)
     counters = {"sources": 0, "received": 0, "written": 0, "ignored": 0, "errors": 0}
     for source_row in active_sources(database):
         started = time.monotonic()
