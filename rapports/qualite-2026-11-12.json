@@ -1,0 +1,90 @@
+{
+  "jour": "2026-11-12",
+  "entres": 142,
+  "gardes": 141,
+  "rejetes": 1,
+  "par_regle": {
+    "R09_doublon_approche": 1
+  },
+  "par_source": [
+    {
+      "source": "20 Minutes",
+      "entres": 18,
+      "gardes": 18,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Ici Nord",
+      "entres": 3,
+      "gardes": 3,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "L'Humanité",
+      "entres": 4,
+      "gardes": 4,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "La Croix",
+      "entres": 10,
+      "gardes": 10,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "La Dépêche du Midi",
+      "entres": 24,
+      "gardes": 24,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Le Figaro",
+      "entres": 11,
+      "gardes": 11,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Le Progrès",
+      "entres": 16,
+      "gardes": 16,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Libération",
+      "entres": 15,
+      "gardes": 14,
+      "rejetes": 1,
+      "taux_rejet": 0.067
+    },
+    {
+      "source": "Nice-Matin",
+      "entres": 31,
+      "gardes": 31,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Ouest-France",
+      "entres": 10,
+      "gardes": 10,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    }
+  ],
+  "rejets_frequents": [
+    {
+      "regle": "R09_doublon_approche",
+      "source": "Libération",
+      "nombre": 1,
+      "exemple": "Un responsable des colons israéliens en Cisjordanie occupée refoulé à son arrivée en France",
+      "detail": "Jaccard 0.92 avec Le Figaro « Un responsable des colons israéliens en Cisjordani »"
+    }
+  ]
+}

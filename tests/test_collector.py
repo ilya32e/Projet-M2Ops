@@ -27,6 +27,7 @@ class FeedHandler(BaseHTTPRequestHandler):
           <title>Article brut</title><description>Extrait</description>
           <pubDate>Wed, 21 Oct 2026 07:00:00 +0200</pubDate>
           <guid>article-1</guid><link>https://example.test/article-1</link>
+          <author>jean.dupont@example.test (Jean Dupont)</author>
         </item></channel></rss>"""
         self.send_response(200)
         self.send_header("Content-Type", "application/rss+xml")
@@ -65,6 +66,10 @@ class CollectorTest(unittest.TestCase):
             self.assertEqual(len(list((root / "articles_bruts").glob("*.json"))), 1)
             document = json.loads(next((root / "articles_bruts").glob("*.json")).read_text())
             self.assertEqual(document["lien"], "https://example.test/article-1")
+            # Conformité : ni flux XML complet ni nom d'auteur dans le brut.
+            texte = next((root / "articles_bruts").glob("*.json")).read_text(encoding="utf-8")
+            self.assertNotIn("feed_xml", texte)
+            self.assertNotIn("Dupont", texte)
 
     def test_retry_uses_exponential_backoff(self):
         FeedHandler.failures_left = 2

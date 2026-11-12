@@ -118,10 +118,9 @@ def store_item(database: sqlite3.Connection, raw_dir: Path, item: NewsItem) -> b
         "publie_le": item.published_at,
         "recupere_le": recovered_at,
         "rubrique": item.category,
-        "payload": {
-            "entry": item.payload,
-            "feed_xml": item.raw_payload,
-        },
+        # Seule l'entrée normalisée est gardée : pas le flux XML complet, qui contient
+        # des noms d'auteurs (dc:creator, author) et des liens d'images.
+        "payload": {"entry": item.payload},
     }
     (raw_dir / file_name).write_text(
         json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8"

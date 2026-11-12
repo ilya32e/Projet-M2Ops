@@ -100,7 +100,6 @@ def parse_feed(payload: bytes, source: Source) -> list[NewsItem]:
                     "category": category,
                     "feedparser_bozo": bool(parsed.bozo),
                 },
-                raw_payload=payload.decode("utf-8", errors="replace"),
             )
         )
     return items

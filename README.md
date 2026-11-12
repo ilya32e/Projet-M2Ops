@@ -77,6 +77,10 @@ bin\status.ps1
 
 La commande renvoie le code 2 si au moins une source est en sommeil, ce qui permet de l'utiliser dans un script d'alerte. Les détails des champs sont décrits dans [`docs/donnees.md`](docs/donnees.md).
 
+## Qualité des données (TD 4)
+
+Après chaque collecte, le DAG nettoie les items (`articles_propres` / `rejets`), vérifie six contrôles de qualité et écrit le rapport du jour dans `rapports/qualite-AAAA-MM-JJ.md`. Une alerte part sur Discord quand un contrôle passe en échec : copier `.env.example` en `.env` et y mettre l'adresse du webhook. Détails dans [`docs/qualite.md`](docs/qualite.md).
+
 ## Orchestration Airflow
 
 Airflow exécute le DAG `gazette_collecte` toutes les 30 minutes. Pour lancer le scheduler et l'interface :

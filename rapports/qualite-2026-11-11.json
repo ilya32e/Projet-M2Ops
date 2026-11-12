@@ -1,0 +1,126 @@
+{
+  "jour": "2026-11-11",
+  "entres": 550,
+  "gardes": 544,
+  "rejetes": 6,
+  "par_regle": {
+    "R09_doublon_approche": 4,
+    "R04_jeux": 2
+  },
+  "par_source": [
+    {
+      "source": "20 Minutes",
+      "entres": 35,
+      "gardes": 35,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Ici Nord",
+      "entres": 80,
+      "gardes": 79,
+      "rejetes": 1,
+      "taux_rejet": 0.013
+    },
+    {
+      "source": "L'Humanité",
+      "entres": 20,
+      "gardes": 20,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "La Croix",
+      "entres": 50,
+      "gardes": 50,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "La Dépêche du Midi",
+      "entres": 100,
+      "gardes": 98,
+      "rejetes": 2,
+      "taux_rejet": 0.02
+    },
+    {
+      "source": "Le Figaro",
+      "entres": 48,
+      "gardes": 48,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Le Monde",
+      "entres": 16,
+      "gardes": 16,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Le Progrès",
+      "entres": 22,
+      "gardes": 22,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Libération",
+      "entres": 103,
+      "gardes": 102,
+      "rejetes": 1,
+      "taux_rejet": 0.01
+    },
+    {
+      "source": "Nice-Matin",
+      "entres": 50,
+      "gardes": 50,
+      "rejetes": 0,
+      "taux_rejet": 0.0
+    },
+    {
+      "source": "Ouest-France",
+      "entres": 26,
+      "gardes": 24,
+      "rejetes": 2,
+      "taux_rejet": 0.077
+    }
+  ],
+  "rejets_frequents": [
+    {
+      "regle": "R09_doublon_approche",
+      "source": "Ouest-France",
+      "nombre": 2,
+      "exemple": "Quatre personnes d’une même famille mortes à Toulouse, la thèse d’un triple homicide suivi d’un suicide privilégiée",
+      "detail": "Jaccard 0.83 avec Le Figaro (https://www.)"
+    },
+    {
+      "regle": "R04_jeux",
+      "source": "La Dépêche du Midi",
+      "nombre": 1,
+      "exemple": "La Dépêche du Midi lance son espace jeux : à vos neurones, prêts, jouez !",
+      "detail": "motif « espace jeux »"
+    },
+    {
+      "regle": "R09_doublon_approche",
+      "source": "Libération",
+      "nombre": 1,
+      "exemple": "Partis politiques à Matignon après les violences : «On va y aller, on va te pourrir la réunion», lance Mélenchon à Lecornu",
+      "detail": "Jaccard 0.95 avec Le Figaro (https://www.)"
+    },
+    {
+      "regle": "R04_jeux",
+      "source": "Ici Nord",
+      "nombre": 1,
+      "exemple": "\"Voyage, voyage\", ICI relance le 2 novembre son grand jeu avec 10.000 euros de vacances à gagner chez Belambra Clubs",
+      "detail": "motif « grand jeu »"
+    },
+    {
+      "regle": "R09_doublon_approche",
+      "source": "La Dépêche du Midi",
+      "nombre": 1,
+      "exemple": "L'ambassadeur russe aux États-Unis, Alexandre Dartchiev, est mort \"soudainement\" à 66 ans",
+      "detail": "Jaccard 0.88 avec 20 Minutes (9a3138fd1dbb)"
+    }
+  ]
+}

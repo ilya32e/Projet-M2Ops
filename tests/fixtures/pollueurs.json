@@ -1,0 +1,17 @@
+[
+  {"titre": "PUBLI-REPORTAGE. Les meilleures cuisines de la région", "extrait": "Contenu proposé par notre partenaire.", "rubrique": "", "attendu": "R01_publi"},
+  {"titre": "Black Friday : les bons plans à ne pas rater ce week-end", "extrait": "Notre sélection d'offres.", "rubrique": "", "attendu": "R01_publi"},
+  {"titre": "Une enseigne de jardinage ouvre à Brest", "extrait": "Les clients découvrent le magasin.", "rubrique": "Contenu sponsorisé", "attendu": "R01_publi"},
+  {"titre": "Horoscope du jeudi 12 novembre : Bélier, Taureau, Gémeaux", "extrait": "Les prévisions du jour.", "rubrique": "", "attendu": "R02_horoscope"},
+  {"titre": "Programme TV : que regarder ce soir à la télé ?", "extrait": "Notre sélection de films.", "rubrique": "", "attendu": "R03_programme_tv"},
+  {"titre": "\"Voyage, voyage\", ICI relance son grand jeu avec 10.000 euros de vacances à gagner", "extrait": "Participez.", "rubrique": "", "attendu": "R04_jeux"},
+  {"titre": "La Dépêche du Midi lance son espace jeux : à vos neurones, prêts, jouez !", "extrait": "Mots croisés, sudoku.", "rubrique": "", "attendu": "R04_jeux"},
+  {"titre": "Résultats du Loto de la FDJ du mercredi 11 novembre", "extrait": "Les numéros gagnants.", "rubrique": "", "attendu": "R04_jeux"},
+  {"titre": "Brest", "extrait": "Titre trop court.", "rubrique": "", "attendu": "R05_titre_vide"},
+  {"titre": "Ã‰lection municipale : Ã  Rennes le dÃ©bat s'ouvre", "extrait": "Un extrait avec �.", "rubrique": "", "attendu": "R07_encodage"},
+
+  {"titre": "Loto : il découvre plusieurs semaines après le tirage qu'il a gagné le jackpot", "extrait": "Un retraité de 60 ans.", "rubrique": "Faits divers", "attendu": null},
+  {"titre": "Aux Jeux olympiques de la jeunesse, la perchiste remporte la médaille d'or", "extrait": "Une victoire au concours de saut.", "rubrique": "Sport", "attendu": null},
+  {"titre": "Midterms : dans les meetings de Trump, un parfum de fin de règne", "extrait": "Le public est enthousiaste.", "rubrique": "Monde", "attendu": null},
+  {"titre": "Épisode méditerranéen : vigilances étendues ce jeudi", "extrait": "Pluies intenses, orages.", "rubrique": "Météo", "attendu": null}
+]

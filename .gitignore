@@ -9,3 +9,4 @@ data/*.sqlite3
 !data/.gitkeep
 articles_bruts/*.json
 .env
+data/metriques.prom
