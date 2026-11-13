@@ -1,2 +1,6 @@
 feedparser>=6.0.14,<7
 
+fastembed>=0.7,<1
+scikit-learn>=1.5,<2
+pyyaml>=6,<7
+numpy<2  # pandas fourni avec Airflow 2.10 est compilé pour numpy 1.x

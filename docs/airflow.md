@@ -14,11 +14,12 @@ Les volumes partagés conservent la base SQLite dans `data/` et les items bruts 
 
 ## Enchaînement des tâches
 
-Depuis le TD 4, chaque passage du DAG `gazette_collecte` enchaîne trois tâches :
+Chaque passage du DAG `gazette_collecte` enchaîne ces tâches :
 
 1. `collecte_multi_sources` : lit toutes les sources actives de `sources.csv` ;
 2. `nettoyage` : alimente `articles_propres` et `rejets` (voir [qualite.md](qualite.md)) ;
-3. `controles_qualite` : vérifie les contrôles de qualité, exporte les métriques, écrit le rapport du jour et alerte sur Discord si un contrôle passe en échec.
+3. `controles_qualite` : vérifie les contrôles de qualité, exporte les métriques, écrit le rapport du jour et alerte sur Discord si un contrôle passe en échec ;
+4. `regroupement_themes` (TD 5), en parallèle des contrôles : regroupe les articles des 24 dernières heures en thèmes et trace le run (voir [mlops.md](mlops.md)). Elle ne tourne qu'au premier passage après 5 h, 11 h, 17 h et 23 h UTC ; sinon elle est sautée (*skipped*).
 
 `nettoyage` et `controles_qualite` tournent même si la collecte a échoué (`trigger_rule="all_done"`), pour que l'équipe soit prévenue.
 

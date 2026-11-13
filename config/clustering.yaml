@@ -1,0 +1,22 @@
+# Paramètres du regroupement par thèmes (TD 5).
+# Toute modification change le hash des paramètres enregistré dans la table runs.
+
+fenetre_heures: 24          # articles propres publiés dans les dernières 24 h
+
+embeddings:
+  modele: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  dossier_cache: data/modeles   # téléchargé une fois (~240 Mo), jamais versionné
+
+regroupement:
+  algorithme: hdbscan       # trouve seul le nombre de thèmes, laisse les articles isolés en bruit
+  min_cluster_size: 4       # un thème = au moins 4 articles
+  min_samples: 2            # plus haut = plus d'articles classés en bruit
+
+nommage:
+  nb_mots_cles: 5           # mots-clés gardés par thème
+  nb_mots_nom: 3            # mots-clés utilisés pour le nom du thème
+
+planification:
+  # Le pipeline tourne toutes les 30 min ; le regroupement seulement au premier passage
+  # après chacune de ces heures (UTC). 5 h UTC = 6 h ou 7 h à Paris, avant l'édition.
+  heures_utc: [5, 11, 17, 23]

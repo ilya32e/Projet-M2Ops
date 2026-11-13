@@ -10,3 +10,5 @@ data/*.sqlite3
 articles_bruts/*.json
 .env
 data/metriques.prom
+data/modeles/
+data/runs/

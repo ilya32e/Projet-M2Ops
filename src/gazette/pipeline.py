@@ -3,11 +3,14 @@
 import argparse
 import logging
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .collector import collect_once
 from .controles import controler
 from .nettoyage import ecrire_rapport, nettoyer
+from .regroupement import charger_config, doit_tourner, executer_run
+from .storage import connect
 
 
 def passage(
@@ -21,6 +24,14 @@ def passage(
     bilan = nettoyer(db_path, raw_dir, migrations_dir)
     resultats = controler(db_path, db_path.parent / "metriques.prom", nettoyage=bilan)
     ecrire_rapport(db_path, rapports_dir, resultats)
+    config = charger_config(Path("config/clustering.yaml"))
+    database = connect(db_path)
+    a_faire = doit_tourner(database, datetime.now(timezone.utc),
+                           config["planification"]["heures_utc"])
+    database.close()
+    if a_faire:
+        executer_run(db_path, config, migrations_dir=migrations_dir,
+                     dossier_runs=db_path.parent / "runs", declencheur="pipeline")
     return resultats
 
 
